@@ -1,0 +1,4 @@
+.envrc
+node_modules
+secret.json
+*.mp3
