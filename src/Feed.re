@@ -2,7 +2,7 @@
 type enclosure = {
   url: string,
   length: string,
-  type_: string,
+  _type: string,
 };
 
 [@bs.deriving jsConverter]
@@ -10,7 +10,7 @@ type item('a) = {
   title: string,
   link: string,
   description: string,
-  pubdate: string,
+  pubDate: string,
   enclosure: 'a,
 };
 
