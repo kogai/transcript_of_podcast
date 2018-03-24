@@ -290,7 +290,7 @@ bs-pixl-xml@^0.1.0:
   dependencies:
     pixl-xml "^1.0.13"
 
-bs-platform@^2.2.2:
+bs-platform@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-2.2.3.tgz#d905ae10a5f3621e6a739041dfa0b58483a2174f"
 

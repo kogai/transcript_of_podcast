@@ -1,7 +1,11 @@
+open Js.Promise;
+
 type t('a) = Js.Promise.t('a);
 
-let return = Js.Promise.resolve;
+let return = resolve;
 
-let bind = (x, f) => Js.Promise.then_(f, x);
+let bind = (x, f) => then_(f, x);
 
 let (>>=) = bind;
+
+let fmap = (f, a) => a >>= (x => x |> f |> return);
