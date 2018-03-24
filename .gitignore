@@ -1,4 +1,12 @@
+.DS_Store
+.merlin
+.bsb.lock
+*.bs.js
+npm-debug.log
+/lib/bs/
+/node_modules/
 .envrc
-node_modules
-secret.json
 *.mp3
+.vscode
+*.log
+secret.json
