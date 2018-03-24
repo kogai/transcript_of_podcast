@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/speech": "^1.2.0",
+    "mp3-split": "^4.0.0",
     "node-fetch": "^2.1.1"
   }
 }
