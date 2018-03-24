@@ -5,7 +5,7 @@
     "start": "yarn build && node src/Download.bs.js",
     "build": "bsb -make-world",
     "build:watch": "bsb -make-world -w",
-    "build:interface": "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
+    "build:rei": "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
     "clean": "bsb -clean-world"
   },
   "keywords": [

@@ -8,13 +8,8 @@ let _x =
     >>= Fetch.Response.text
     |> fmap(PixlXml.parse(_))
     |> fmap(Feed.tFromJs)
-    |> fmap(x => x.Feed.channel)
-    |> fmap(a => {
-         Js.log(a);
-         let f = Feed.channelFromJs;
-         /* let b = Feed.channelFromJs(a); */
-         /* Feed.channelFromJs */
-         a;
-       })
+    |> fmap(x => Feed.(x.channel))
+    |> fmap(Feed.channelFromJs)
+    |> fmap(x => Feed.(x.item))
     |> fmap(x => Js.log(x))
   );
