@@ -54,6 +54,7 @@ let translate = fileId =>
            "config": {
              "encoding": "FLAC",
              "sampleRateHertz": 44100,
+             /* "sampleRateHertz": 16000, */
              "languageCode": "en-US",
            },
            "audio": {
@@ -70,26 +71,30 @@ let translate = fileId =>
         Js.Promise.make((~resolve, ~reject) => {
           let op = data[0];
           on(op, `complete, (result, _, _) => resolve(. result));
+          on(op, `progress, (_, _, _) => Js.log("Speech analysing..."));
           on(op, `error, (e, _, _) => reject(. e));
         })
     )
     |> fmap(result =>
-         Array.to_list(result##results)
-         |> List.map(r =>
+         result##results
+         |> Array.to_list
+         |> List.map(r => {
+              Js.log(r##alternatives);
               List.fold_left(
-                (acc, a) => Printf.sprintf("%s  \n%s", acc, a),
+                (acc, a) => Printf.sprintf("%s  \n%s", acc, a##transcript),
                 "",
                 r##alternatives,
-              )
-            )
+              );
+            })
          |> String.concat("\n\n")
          |> Node.Fs.writeFileSync(
-              Printf.sprintf(
-                "transcripts/%s.md",
-                Filename.chop_extension(fileId),
-              ),
+              Printf.sprintf("transcripts/%s.md", fileId),
               _,
               `utf8,
             )
        )
   );
+
+translate("7c823e12");
+
+translate("7c823e12");
