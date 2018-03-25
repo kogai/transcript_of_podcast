@@ -6,20 +6,31 @@ let rss_endpoint = "https://rss.simplecast.com/podcasts/4151/rss";
 external stringOfBuffer : ('a, [@bs.string] [ | `utf8]) => string = "toString";
 
 let job = (x: Feed.item(Feed.enclosure)) : Js.Promise.t(unit) => {
-  let filename = Feed.nameOfUrl(x.Feed.enclosure);
-  let mp3 = Printf.sprintf("audio/%s", filename);
-  let flac = Printf.sprintf("%s.flac", Filename.chop_extension(mp3));
-  let ffmpeg = Printf.sprintf("ffmpeg -y -i %s %s", mp3, flac);
-  let sox = Printf.sprintf("sox %s --channels=1 --bits=16 %s", flac, flac);
+  let fileId = Feed.(x.enclosure |> Feed.nameOfUrl |> Filename.chop_extension);
+  let mp3 = Printf.sprintf("audio/%s.mp3", fileId);
+  let flac = Printf.sprintf("audio/%s.flac", fileId);
+  let flacInterMediate = Printf.sprintf("audio/%s.im.flac", fileId);
+  let ffmpeg = Printf.sprintf("ffmpeg -i %s %s", mp3, flacInterMediate);
+  let sox =
+    Printf.sprintf(
+      "sox %s --channels=1 --bits=16 %s",
+      flacInterMediate,
+      flac,
+    );
   let noOption = Node.Child_process.option();
+  Js.log("Download mp3 file...");
   Async.(
     Feed.download(x.Feed.enclosure)
+    >>= progress("Convert mp3 to flac...")
     |> fmap((_) => Node.Child_process.execSync(ffmpeg, noOption))
+    >>= progress("Modify encoding...")
     |> fmap((_) => Node.Child_process.execSync(sox, noOption))
+    >>= progress("Upload to cloud storage...")
     |> fmap((_) => Storage.default({"keyFilename": "./secret.json"}))
     |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
     >>= Storage.upload(_, flac)
-    >>= ((_) => Speech.make(filename))
+    >>= progress("Recognize on cloud speech...")
+    >>= ((_) => Speech.translate(fileId))
   );
 };
 
@@ -27,6 +38,7 @@ let _x =
   Async.(
     Fetch.fetch(rss_endpoint)
     >>= Fetch.Response.text
+    >>= progress("Fetch RSS feed...")
     |> fmap(PixlXml.parse(_))
     |> fmap(Feed.tFromJs)
     |> fmap(x => Feed.(x.channel))

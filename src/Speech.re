@@ -42,7 +42,7 @@ external on :
   unit =
   "on";
 
-let make = filename =>
+let translate = fileId =>
   Async.(
     speechClient({
       "projectId": "transcript-reason-town-fm",
@@ -58,7 +58,10 @@ let make = filename =>
            },
            "audio": {
              "uri":
-               Printf.sprintf("gs://transcript-reason-town-ml/%s", filename),
+               Printf.sprintf(
+                 "gs://transcript-reason-town-ml/%s.flac",
+                 fileId,
+               ),
            },
          },
        )
@@ -83,7 +86,7 @@ let make = filename =>
          |> Node.Fs.writeFileSync(
               Printf.sprintf(
                 "transcripts/%s.md",
-                Filename.chop_extension(filename),
+                Filename.chop_extension(fileId),
               ),
               _,
               `utf8,

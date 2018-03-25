@@ -8,7 +8,8 @@
     "build:rei":
       "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
     "job":
-      "docker build -t reasonfm . && docker run -v `pwd`/audio:/app/audio -t reasonfm",
+      "yarn clean:audio && docker build -t reasonfm . && docker run -v `pwd`/audio:/app/audio -t reasonfm",
+    "clean:audio": "rm -f audio/*.flac && rm -f audio/*.mp3",
     "clean": "bsb -clean-world"
   },
   "keywords": ["BuckleScript"],
