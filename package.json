@@ -5,12 +5,13 @@
     "start": "yarn build && node src/Download.bs.js",
     "build": "bsb -make-world",
     "build:watch": "bsb -make-world -w",
-    "build:rei": "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
+    "build:rei":
+      "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
+    "job":
+      "docker build -t reasonfm . && docker run -v `pwd`/audio:/app/audio -t reasonfm",
     "clean": "bsb -clean-world"
   },
-  "keywords": [
-    "BuckleScript"
-  ],
+  "keywords": ["BuckleScript"],
   "author": "",
   "license": "MIT",
   "devDependencies": {

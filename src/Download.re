@@ -2,6 +2,31 @@
 
 let rss_endpoint = "https://rss.simplecast.com/podcasts/4151/rss";
 
+let job = (x: Feed.item(Feed.enclosure)) => {
+  let mp3 = Printf.sprintf("audio/%s", Feed.nameOfUrl(x.Feed.enclosure));
+  let flac = Printf.sprintf("%s.flac", Filename.chop_extension(mp3));
+  let ffmpeg = Printf.sprintf("ffmpeg -i %s -r 44100 %s", mp3, flac);
+  let sox = Printf.sprintf("sox %s --channels-1 --bits=16 %s", flac, flac);
+  Async.(
+    Feed.download(x.Feed.enclosure)
+    |> fmap((_) => Node.Child_process.execSync(ffmpeg))
+    |> fmap((_) => Node.Child_process.execSync(sox))
+    |> fmap((_) => Storage.default({"keyFilename": "./secret.json"}))
+    |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
+    |> fmap(
+         Storage.upload(
+           _,
+           flac,
+           (err, file, res) => {
+             Js.log(err);
+             Js.log(file);
+             Js.log(res);
+           },
+         ),
+       )
+  );
+};
+
 let _x =
   Async.(
     Fetch.fetch(rss_endpoint)
@@ -16,19 +41,7 @@ let _x =
     |> fmap(
          List.map(x => Feed.{...x, enclosure: enclosureFromJs(x.enclosure)}),
        )
-    |> fmap(x => Js.log(x))
+    |> fmap(List.hd)
+    |> fmap(job)
   );
-
-Storage.default({
-  "keyFilename": "./transcript-reason-town-fm-bfc2d624f978.json",
-})
-|> Storage.bucket(_, "transcript-reason-town-ml")
-|> Storage.upload(
-     _,
-     "https://dts.podtrac.com/redirect.mp3/audio.simplecast.com/ba9f3bee.mp3",
-     (err, file, res) => {
-       Js.log(err);
-       Js.log(file);
-       Js.log(res);
-     },
-   );
+/* |> fmap(List.map(job)) */
