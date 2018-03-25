@@ -39,7 +39,7 @@ let nameOfUrl = (a: enclosure) : string =>
       | Some(name) => captures(name)
       | None => raise(Invalid_url)
     )
-    |> (xs => xs[0])
+    |> (xs => xs[1])
     |> Js.toOption
     |> (
       fun
@@ -57,14 +57,22 @@ external createWriteStream : string => s = "createWriteStream";
 
 [@bs.module "https"] external get : (string, r => s) => s = "get";
 
-[@bs.send] external pipe : (r, s) => s = "pipe";
+[@bs.send] external pipe : (Fetch.readableStream, s) => s = "pipe";
 
 [@bs.send]
-external on : (s, [@bs.string] [ | `close], 'a => 'b) => 'c = "on";
+external on : (s, [@bs.string] [ | `close | `error], 'a => unit) => 'b = "on";
 
 let download = (a: enclosure) : Js.Promise.t(unit) => {
   let ws = createWriteStream(Printf.sprintf("audio/%s", nameOfUrl(a)));
-  a.url
-  |> get(_, res => pipe(res, ws))
-  |> on(_, `close, (_ => Async.return()));
+  Async.(
+    Fetch.fetch(a.url)
+    >>= (
+      res =>
+        Js.Promise.make((~resolve, ~reject) =>
+          pipe(Fetch.Response.body(res), ws)
+          |> on(_, `close, x => resolve(. x))
+          |> on(_, `error, e => reject(. e))
+        )
+    )
+  );
 };

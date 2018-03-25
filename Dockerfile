@@ -21,4 +21,4 @@ COPY . /app
 
 RUN yarn build
 
-CMD ["node", "src/Download.bs.js"]
+CMD ["node", "src/Transfer.bs.js"]

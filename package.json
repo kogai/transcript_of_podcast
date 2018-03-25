@@ -2,7 +2,7 @@
   "name": "transcript_reason_town_fm",
   "version": "0.1.0",
   "scripts": {
-    "start": "yarn build && node src/Download.bs.js",
+    "start": "yarn build && node src/Transfer.bs.js",
     "build": "bsb -make-world",
     "build:watch": "bsb -make-world -w",
     "build:rei":

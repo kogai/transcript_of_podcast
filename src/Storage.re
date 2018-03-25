@@ -9,5 +9,4 @@ external default : config => s = "@google-cloud/storage";
 
 [@bs.send] external bucket : (s, string) => b = "bucket";
 
-[@bs.send]
-external upload : (b, string, ('a, 'b, 'c) => unit) => unit = "upload";
+[@bs.send] external upload : (b, string, ('a, 'b) => unit) => unit = "upload";
