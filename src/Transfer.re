@@ -18,7 +18,6 @@ let job = (x: Feed.item(Feed.enclosure)) : Js.Promise.t(unit) => {
       flac,
     );
   let noOption = Node.Child_process.option();
-  Js.log(fileId);
   Js.log("Download mp3 file...");
   Async.(
     Feed.download(x.Feed.enclosure)
@@ -31,7 +30,7 @@ let job = (x: Feed.item(Feed.enclosure)) : Js.Promise.t(unit) => {
     |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
     >>= Storage.upload(_, flac)
     >>= progress("Analyzing on Google Cloud Speech...")
-    >>= ((_) => Speech.translate(fileId))
+    >>= Speech.translate(fileId)
   );
 };
 
