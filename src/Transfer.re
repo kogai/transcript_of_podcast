@@ -49,8 +49,21 @@ let result =
     |> fmap(
          List.map(x => Feed.{...x, enclosure: enclosureFromJs(x.enclosure)}),
        )
-    |> fmap(List.hd)
-    |> fmap(job)
+    |> fmap(xs => {
+         let files =
+           Node.Fs.readdirSync("audio")
+           |> Belt.List.fromArray
+           |> List.filter(Js.Re.test(_, Js.Re.fromString(".*\\.md$")))
+           |> List.map(Js.String.split("."))
+           |> List.map(xs => xs[0])
+           |> Array.of_list;
+         xs
+         |> List.filter((x: Feed.item(Feed.enclosure)) => {
+              let title = Feed.escape(x.Feed.title);
+              ! Js.Array.includes(title, files);
+            });
+       })
+    |> fmap(xs => Js.Promise.all(Array.of_list(List.map(job, xs))))
   );
 
 Js.Promise.catch(
