@@ -42,7 +42,7 @@ external on :
   unit =
   "on";
 
-let translate = (fileId, ()) =>
+let translate = (fileId, title, ()) =>
   Async.(
     speechClient({
       "projectId": "transcript-reason-town-fm",
@@ -77,29 +77,21 @@ let translate = (fileId, ()) =>
     |> fmap(result =>
          result##results
          |> Array.to_list
+         |> List.map(r =>
+              List.fold_left(
+                (acc, a) => Printf.sprintf("%s  \n%s", acc, a##transcript),
+                "",
+                r##alternatives,
+              )
+            )
+         |> String.concat("\n\n")
          |> (
-           xs =>
-             {
-               let result =
-                 List.map(
-                   r =>
-                     List.fold_left(
-                       (acc, a) =>
-                         Printf.sprintf("%s  \n%s", acc, a##transcript),
-                       "",
-                       r##alternatives,
-                     ),
-                   xs,
-                 );
-               Js.log(result);
-               result;
-             }
-             |> String.concat("\n\n")
-             |> Node.Fs.writeFileSync(
-                  Printf.sprintf("transcripts/%s.md", fileId),
-                  _,
-                  `utf8,
-                )
+           text =>
+             Node.Fs.writeFileSync(
+               Printf.sprintf("audio/%s.md", title),
+               text,
+               `utf8,
+             )
          )
        )
   );

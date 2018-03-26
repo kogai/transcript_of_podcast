@@ -30,7 +30,7 @@ let job = (x: Feed.item(Feed.enclosure)) : Js.Promise.t(unit) => {
     |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
     >>= Storage.upload(_, flac)
     >>= progress("Analyzing on Google Cloud Speech...")
-    >>= Speech.translate(fileId)
+    >>= Speech.translate(fileId, Feed.escape(x.Feed.title))
   );
 };
 
