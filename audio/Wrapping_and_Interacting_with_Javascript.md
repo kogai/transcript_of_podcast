@@ -1,0 +1,188 @@
+  
+hello everybody and welcome 2 episode 3 of Reason town today we're going to talk about external writing code that interfaces with the outside world and here I am with my co-host Jarrod Forsyth and I'm Murphy Randall and today we are sponsored by day one to the company I work for him to that beautiful journaling and life archiving a pile of day one and I hope you will do if you try it out and also we have a new sponsor our band would sponsor Tyler McGinnis. Com which is the linear course course based which is the Linea corse based approach to learning web Technologies big thing is the Tyler McGinnis. Com for sponsoring our band with this makes the show possible and we're grateful to him for that now announcements wise there is a reason Kampf announce I'm just going to give a little applies here at exciting reason, 2018 in Vienna on the 11th through the 13th of May and I believe ticket sales are open currently and you are
+
+  
+going to help with that is that right there that's right I'll be giving a workshop for helping people gets her with reason along with a couple other people so cool I was dying to go and realize that starts at not aligned for me and I have another trip instead that's going to be keeping me occupied during that time so I won't be there but I will be there in heart so very exciting and hoping get tickets in and go be interested as well so I'll jump right into it today we're going to talk about FF I actually not going to talk about external but a term that we often hear when were talking about programming is ffi can you explain a little bit about what that means and why we care so f f i stand for for and function in her face and it comes from the world of systems programming I think we're in RCS has been kind of a standard language for a while and then there were all these languages that were
+
+  
+built on top of it to some extent like Java and other things and they wanted to take advantage of libraries that were still written in C and so there was this ability to say from java call a function that was written in C and so okay well has this switch has this all kinds of things and nowadays it it just stands for basically calling a function in a language that isn't the language that you're working with sew-in in the reason example that we're going to talk to you about your writing and reason but you want to call a function that's Define in JavaScript
+
+  
+that is correct and that's funny to say I didn't mean that to her act as in like you passed the test but I think her I agree with what you're saying and so the reason this is important to me even though I'm just learning reason is that at the primary reason that I'm using reason is to write JavaScript with reason and that's not even the reason can be used to write code etcetera I might my main motivation for using it has been to interface with JavaScript libraries in to write JavaScript code so I had to learn the external interface right away and they're going to go through some of those ideas today so let's really quickly highlight that there are multiple approaches to interfacing with outside code or rather with like you said another language maybe the house language you maybe you've heard of elm Elm takes it totally different approach than what we're going to talk about today reasons approach is very straightforward in that you are
+
+  
+Brighton bindings for the language and the signing types to existing job on types JavaScript code so the first thing we should say before moving farther is here be dragons I mean if you are not used to type systems this is a place where you have to be really careful even if you if you're not confident that you understand the API at the library that you're going to wrap or the behavior of the code that you're going to wrap this is a very dangerous place and when I say dangerous I mean this is the place on these borders are the places where you have the potential to make reasons type system dishonest to make it lie because this is where you go ahead and say trust me reason the thing that you're calling out to has these types and will return these values and if you're not trustworthy when you write this and this wrapping interface then reasons type Checker can't help you anymore and you'll end up with some nasty and confusing runtime errors so so call you before you move any further please be very careful
+
+  
+this is like the place we're going to be most careful when writing your reason code because of the the compiler can't help you if you are irresponsible with your with your external code that is when you're say you're you're running your test and there's something weird happening it's easy to say let's go check or externals you know that this is in contrast to for example flow or typescript where there's just about zero barrier between you and the unsafe JavaScript world going to have to crawl through all of your code to find the places where I know and he slept in in reason at least Corrals at all into kind of one place you know you look for any any place that you use an external and then you can double-check that and then as you sat on the on the far other side is Elm where it it does a lot more or it it forces you to do a lot more of the leg work to verify that
+
+  
+you're not letting in any unsound types which is actually I think one of the biggest advantages for reason over typescript and flow is that they make the interface with the JavaScript code very explicit I'm like very explicit and so that I think it is a great design decision because my biggest frustration from using both types of Aunt Flo has been this kind of loosey-goosey interaction between types and JavaScript and like not knowing where the bad types are coming from in like like you said where my enemies are sneaking in and then Denny's are like poison because they they go in one place and then they just like spread out throughout the rest of the app if you're not super disciplined so I love the compiler here is saying no you got to pay special attention to the code in that that raps the outside world and make sure that you're being honest and even still with all of that compiler saying hey pay attention to me I we end up with bugs in
+
+  
+the rapping code because we have certain expectations about how the library we are wrapping behave and then they don't behave that way and it causes causes paint to the fact I was one of the libraries that I was recently wrapping that was a big problem I had is the code to my app wasn't behaving How It Should Have and a couple hours into the night I realize that the big problem is that the library that I'm wrapping didn't behave as I had expected it to and there wasn't documentation for the part that I was doing so those couple hours that I was spending debugging weren't reasons fault at all but we're in fact it just my bad assumptions about the way the library work so yeah that's step number one is make sure you actually know what your how the thing that you're wrapping behaves right and I think we might see in the future a little bit more hand-holding for what reason
+
+  
+doing things like checking the type as a crosses the border to make sure that the that the jobs get fiber is doing what you expected it to which which would pay some runtime cost at and give you a little bit more safety and stability so Elm does that too if that's part of the way that I'm tries to keep itself pure from from those kind of assumption accident where it's just like you have no bad things aren't actually allowed into reason World which should be pretty neat so let's talk about the external keyword that's what you can be looking for when your defining ffi function to JavaScript tell me how that works so yet so actually let's have you tell me really quickly the way that you typically are in a use an external command to Define and wrap something is you're going to throw some brackets and in Aruba declaration at the front of the line and an arroba is is the answer never hurt you never have
+
+  
+the married Guy I learned that that's called the robot I think that's actually English
+
+  
+ arroba I don't know good question. It looks like a frisbee the at symbol at the beginning of the line you going to put a square bracket and then the axon Lord and a robot and you're going to put in some directive to buckle straps OBS. Module or we're going to talk about that in just a second but you're going to basically give like a a directive tobacco Skype. Here's where I want to ask you Jared at what is that in in braces in the Square braces what is that is that a buckle script directive is that how does that relate to reason or no camel look like all that declaration between Square braces so when you see the at sign of the arroba that's called The Decorator and it's totally surrounded by square braces and so you might be familiar with decorators from JavaScript there's a I guess there's a proposal that hasn't been accepted yet also from python
+
+  
+ but basically this decorator is is something that post processors so send text plugins essentially can look for this and then decide to do some transformation on that and there are a number of bucklescript specific decorators and they all start with BS. Something that's how you know that this is is hooking into something that bucklescript knows about first class but there are also decorators for generating functions from a type on some other handy macro like functionality
+
+  
+ very cool so that then in the Square braces that's a macro now I've also seen those Square bases around things that are wrapped with a percent BS or something or and percent percent BS something on your case you were in the sin tax extension for a sink so and every time I see a square bracket a set of square back is like that is that saying that I'm going to run into some sin tax extension yeah so the the difference here is a a percent sign an extension point is going to be replaced with some coke wear as a decorator is is just kind of annotating some code that's already there that might end up being transformed okay very cool so sad to go back to the original thing and I was saying it sorry to interrupt is we start out the line of The Decorator then and we're going to give some instruction to bucklescript about what it should do with our next the next thing we're going to write so we start The Decorator and
+
+  
+ show me right external let sorry not to let yes I'll let boys should have reviewed this before we started the podcast at greater and then the keyword external and then the name of the symbol you want to find so for example if I'm going to bind to math. Random on the global scope I would use The Decorator BSA scope and I throw in strings math to say this is on the global scope of math which is available on window and then I would put the key word external and then I type random and then I give it a type so I put in a colon and say what that is now I might put a function definition there where random is going to be a function that takes unit and unit is we should explain I don't know if we explain the four unit is basically just a value that means like nothing right this is a function that takes nothing so and it's resembled in the type sphere you can just type the actual word unit
+
+  
+ is value it's just open and close friends so they would be a function that takes unit and returns a random number right so that you would return a type of float probably and then the other day there and unit and reason is very similar to null in JavaScript or void in Java or nil enclosure and I also void inflow and maybe typescript the thing about reason is that it's very
+
+  
+ you have to be honest about where you're going to return something or not in in Java there's the famous no pointer exception which reasons unit doesn't allow it if it returns unit it's never going to return anything
+
+  
+ that's right only unit the only type the only value that occupies the type unit is unit which is awesome right you never have something that is a value be like oh actually that that's a unit or like expect the typing and then get something else it's always just unit that correct so at that point in the external that declaration we have like external random get a type which is the function from unit to float and then you use the equal sign and here's where we're going to introduce then you put a string that says I'm going to bind to this name in the JavaScript world and you can either write random there so it's like external random of type this equals the string random or you can leave it as an empty string and lose some syntactic-sugar to say well I'll use whatever the name after external is that so that was a very confusing explanation for audio but it starts to make more sense when she looking at it in person at is that
+
+  
+ is that under review right now Jared is there the possibility that that syntax might change
+
+  
+ it's it's something that I kind of want to change but they're there hasn't been much discussion about it so far the the interesting the reason we're using decorators here is that the external syntax comes directly from a camel and a world where you're having this richer language interfacing with see where she is much more basic in the kind of things that I can represent and sewed external send text doesn't doesn't know about object-oriented functions that you might be calling for example or Scopes and see every function is a function at the top level there's no scopes and so buckle script had to add these decorators to say oh you know this primitive was meant to interface with a very primitive language now that were interfacing with JavaScript we have to have more information about the kind of function we might be expecting
+
+  
+ so I've been thinking I've been brainstorming about what it would look like to have a syntax primitive that was made with JavaScript in mind so that it would make more sense maybe look a little bit more like a job is to import statement era yeah that's really that's an interesting place to explore the ideas so we don't know if that's something that will never change but at the at this point I'll say that it took me a bit to kind of wrap my head around the syntax but once it clicked it made a lot more sense and something that took me awhile to realize to and talking with you Jerry was that wow this this ffi this design for this for infection in her face is very powerful if you dig into the Bible script docs for the external the external directives and decorators I'm using all the wrong words I'm sure but you dig into the docks there you'll realize that there's you can almost represent any way that a JavaScript thing would be defined are called with this
+
+  
+ sternal if I was just which is really neat so that makes it really powerful to quickly right rapper code now that's with the caveat that if you're riding rapper code for JavaScript library you probably want to end up writing something that's a little more idiomatic functional reason then the normal JavaScript library API will look because usually JavaScript library if you guys are very object oriented and very JavaScript e and very much like oh well you can pass in an object here or a string or an indoor undefined or the function you know we'll just do whatever we think is best based on what you pass in things are a little bit more structured in reason world so if you are wrapping a library I'd suggest taking a minute to think about what would this library look like if it were written in reason rather than just saying well I'll just exactly what JavaScript does
+
+  
+ call me outside let's talk about the like maybe four of those decorators that are very important to getting started with external what what do you think Jerry what are some of those so if you are free nipple wrapping an old library something you got off and p.m. you're definitely need to stop module Trader which means you pass in the name of the module you're going to import and buckles goes behind the scenes will actually generator require statement and then use that whenever you're calling Maxwell functions associated with it so you just do BS. Module and then the string say Firebase if you're using the fire bass module
+
+  
+ excellent and that one's probably the most essential one if you're finding to libraries like you said and not just by need to your own code though we will say Vine into your own code if you're going to put that in a separate module you'll need that as well vs. just writing your code in line which you can actually do and we're not going to talk about cuz that's that's a BS. Ross statement even more dangerous that's true then I would just avoid that possible so you can put in a relative path and it will require a function that's a job for file that's adjacent to your reason file that's right is that there's a small bug with that current bad Buckle script compile her that we'll talk about it later so that's a little caveat to doing that but we'll talk about that after so next one I'd say is BS. Send now this is what I didn't know about for a while but the super cool BS. Send allows you to say
+
+  
+ take a value from from the JavaScript world and call a function on it or get an attribute from it so for example like if there's subscribe function on Firebase which I haven't use Firebase in Wildwood Pretender is Firebase. Subscribe you might say BS. Send and then you say yes. Send that's BS I send and then external subscribe and then you give the type and the first parameter for that type that you are you basically defining a function here are you going to say BS. Send a function in the first round of that function will be the thing on which you want to call the name subscribe I didn't describe that super well point is you can send that you can call functions on objects using that's what did you want to clarify Jared example of promises where you got to promise you want to call. Then on it
+
+  
+ and there's no there's no Library function that's called then that takes a promise as the first argument and the function as a second argument it's just it's an object-oriented call and so the BS. Send memes on the reason side this is going to look like a normal functional function but I'm a JavaScript side take whatever first argument I give you and treat that as the base object to call this function on
+
+  
+ that was a much better explanation so excellent go with that one so that's super useful DSS in a super useful next vs. New very simple just called new on whatever your past you're you're decorating with O and that's also throw in an external declaration can have more than one decorator so you can have BS. Module and Bs. New which is in fact off and where you use new writes the import of module and call new on it that's something that people design in therapy I already mentioned in the examples BS that's the difference between BS. Scopophobia Sam module is module will put in a required statement for you depending upon what your module implementation do you choose for the compiler is about BS that scope will not put an import save in order to acquire statement in it will just assume that whatever you are binding to his on the global Scopes that's what you use for something like math. Random or
+
+  
+ Jason. Decode are adjacent at stringify for example
+
+  
+ sliding goes the most important for you have any others that you want to mention.
+
+  
+ That's pretty good you can you can dig around in the box and there's there are several more that like you said if if you're imagining what would this look like if it were recent first if it were functional first you might want to get into some of that but these will definitely get you off the ground so let's talk about that now moving into maybe a section where let's let's say hi this is how you wrap your first Library wrapping your first Library the first thing I'd say here is going back to thinking and reason so we're not in reason we're not going to necessarily try to use the oil object-oriented approach where we're going to get an object with a bunch of functions on it instead we're going to think about objects themselves and functions that take those objects and return either does objects mutated or new objects so my recommendation would be to see if you could take whatever life or you're going to wrap and start to think of it in terms of opaque types and the
+
+  
+ oceans that operate on his okay types now what's an opaque pipe Jared
+
+  
+ and opaque type is a type that you're not allowed to look into
+
+  
+ and libraries will use this for example they might have some type maybe it's a hashmap maybe it's a list that they're using internally and modifying and what have you but they don't want external users to be able to get in there and mess around because maybe they haven't so invariants that they want to maintain and so MD in external interface the the API that they showed the outside world they say here's this type you can't know what it is
+
+  
+ but an end so in order to create that type you have to ask that Librarians you know the library has to expose here's how you create this type here's how you need that type and then here's how you get useful information out of it afterwards and when we're working with externals a a nice way to do it is treated in a similar fashion say there's this type that is Firebase and it exist in the jobs World on the reason side we're not allowed to enter introspect it you just have to use these other external functions that I've defined in order to do operations on it and get you some information now
+
+  
+ exactly so the the Firebase okay type one example might be like a connection so maybe you define at Firebase module in reason that's called Firebase and you say type connection and it's no big type there's nothing you can call on it it just is there and then maybe you make a function that takes a an address to your fire base location at remember what they're called if I buy store and return the connection so now you got a connection that the only thing you can do with it is pass it to functions that ticket connection but maybe what you want to do is like it access to a collection off of that connection and so you got another function that takes a connection and the name of a collection and returns a collection so there's a hope that's making sense of you starting to get just a collection of data hello pig types which are data and the functions that operate on them which take them do something in return others so that's a very functional way of thinking of things and it's actually pretty straightforward in Jenner
+
+  
+ want to try to take out the door into things and wrap them in this way and that's nice do you want to talk a little bit Jared about the illusion of immutability and you know cuz reason is immutable by default in lot of ways except for certain collections but often when you're wrapping a library you'll have an API that looks immutable but you really be muting things you don't talk about that for a second yeah and sew in in reason why when you for example have a mutable thing you working with the
+
+  
+ what the Paradigm the best practice that the general way that it's indicated oh this function you're calling is mutating is it it just returns unit so you call this function it doesn't give you anything back and that means whatever it is that you had to start with that must be what you are still working with that so that that is what changed
+
+  
+ and
+
+  
+ I don't know I don't know where else you want me to go to this now that makes sense I need that was get the thing I should have said it myself so I'll say it now the things I've noticed here is that often if you're not totally used to mutable versus immutable you can maybe be covering up the fact that something is mutable with your API design so like you said Jared if you're going to wrap a function that is mutating something you might consider making it returned unit so that the users know that the thing that's getting past in is getting mutated instead of that changed or I'm sorry I didn't set of copied and said immutably copied in return because you never know when you're going to get in Jose an object that's reference from some other part of the code and then you go ahead and mutate it not thinking that you're meeting at that could be a nasty place for bugs to hide is when your meeting stuff that shared Across The Cove Base so think about that when you're wrapping your library to
+
+  
+ that's right one way to get around that is to make functions and reason that that immutable build up whatever state you need and then only at the end pass all that information to the JavaScript side and do the mutated stuff for example there's there's the Builder pattern safe for example with the express Library the note Express Library you call Express and you get back an app and then you call a bunch of functions on it that mutate that app instance and then
+
+  
+ finally the end you call Surf or listen or whatever it is that says now start my server
+
+  
+ if you were wrapping me some reason you might make a bun a bunch of functions that don't call in to Josh with y'all but her just building up the configuration information of what this server will need so all of the handlers all of the Middle where and what have you and then the last function when you say listen then you you create a nap on the couch beside you pass it all these things and do all the mutated things but only inside of your pure function so that on the reason side you don't even have to worry about it you can you can treat everything as a mutable because it is up until you call the final function
+
+  
+ I love it that's a great design practice I think that's fantastic and you'll find that and other especially pure functional languages like Haskell I don't know is that a kind of an established pattern in in the Kokomo world as well
+
+  
+ they're so Inn in reason we're we're still pretty new there aren't there in a whole ton of a salvage patterns and Inns in the broader Ocala World you'll find the whole gamut that there are people that ride a camel kind of more embracing the musical side and people that are embracing the functional side all right so that's a recovered okay types functions on the types modules we could mention that really quickly but that's kind of basic reason code right so where you define a module for yourself and drop types and functions into it maybe we don't need to go deeper into that but next
+
+  
+ a nice thing there is if for example your you've got a couple of object-oriented objects on the JavaScript side and you're making these functional style functions for them it can get a little crowded if you have all of your functions for handling the Firebase object and the connection object and the query object all in a single scope so in your app for Library you can make a module that's called connection and there you have all of the functions that deal with a connection and a module card query for the things dealing with a query Etc Great Point love it
+
+  
+ so next is let's talk about if you're making maybe at like an MPN package to wrap an existing Library like let's continue with the Firebase idea so you're trying to make reason code that I'll wrap up your fire a fire base in p.m. install Firebase kind of module so there are a couple of choices when it comes to dependencies when you're making your library and the preferred best practice choice is to just include your for the fire bass Library as a dependency not a dependency not appear dependency but just at the penalty in your library so that when other authors when other users install your package then it will have Firebase included already at the correct version so they don't have to worry about getting your rapper code and the fire bass library and making sure that they match at virgin the the exception here I think would be unless you know that you need a peer dependency don't use it. Of Hennessy so then some cases that would be like reaction example right react as a big area where Peter Pan
+
+  
+ these were used because you don't want to have 10 different versions of react that your coat is using that sound right. If you expect this library to be the only interface that people are going to be interacting with this mpm package then then essentially hide it you have it be your dependency if you have maybe several libraries they're going to work working in concert all interacting with the JavaScript objects that Firebase produces then you'll want to be a peer dependency to make sure that you only end up with one copy of that and cam package
+
+  
+ great Point actually this might be an interesting point to bring up that the Buckle script standard Library exposes a bunch of opaque types for working with things like the dumb like or promises are common common data types that might be found between JavaScript libraries and the reason they do just expose the opaque types and not functions that work on those types is because they say in the documentation you know there are a thousand ways to wrap these things and a lot of different approaches to representing these ways to work with these this data and we don't want to be prescriptive about how to work with this but we do want all of these libraries to have compatible data so we're just going to publish the data types these are pig types and hope that all of these other libraries don't come with their own types but use the common types so it might be an interesting idea to even just publish a library that's a bunch of a pig types if it's a very popular piece of piece of code that you're wrapping are very popular Library rapping
+
+  
+ just published the types and then let other people including yourself interpret new ways of interacting with that day. That's an interesting idea so you have compatibility between the libraries
+
+  
+ alright so let's talk about gotchas I have found at I think I only have one got you myself I don't know if you have any more Jared but I'll mention while rapping third-party code I have run into the fact that at the current version of bucklescript which is 1 Point 9.0 the default behavior for imports for BS stop. Module statements is 2 inline the require where possible so in other words if module Foo is it if food. Reed is calling bar. R E & Bar. Ree has abs. Module statement in it and all it is is wrapping external wrapping code then a compiler will say you know what Rich going to leave bar. Rita empty and in line all of that stuff into food a tree this is cool and it's fine if your truck is all internal if you're not use if you're not publishing Bart a tree as its own mpm module but if you have bar. Republish doesn't mpm module and it's and it's important its own in p.m. to pay
+
+  
+ and then those Imports get in line into Fufu which is the thing that's calling bar then you're going to end up with a runtime error because food can't require the child dependencies of bar at the moment so the way this is I think this is a bug in the way to get around that there a couple ways you could write an REI file because if you write an RFI what is an interface to your reason file then they won't throw it won't I try to inline that code it'll leave your your reason you're the code produced by your reason interface in tact and so the import well stay in the right place you can use this the trick you taught me Jared which is after a function that does an import like that then you can just say let the name of the the function equal the name of the function so that's that's just a trick right there where so for example if I had to find like your external Firebase module and then I would say let buyer basical fireplace and that's just telling
+
+  
+ the reason code don't optimize this out they should stay in the module where it was to find so that's the hockey bug fixed but it does work and another approach is to inline the code so for example if you're like trying to vendor a library and reference it using relative path and you're having a problem with the Imports and you don't want to do the REI file on the other thing then you can actually just do a vs. Raw statement and you can paste in the entire Library into your file probably the least preferable way to go cut it does work do you have any other guy teaches about publishing Library.
+
+  
+ so one thing that you might want to do I guess in in this case not so much but in general in your publishing a reason Library you might want to also include the generator JavaScript so that a JavaScript client could could use that library in this case if you're already wrapping and then p.m. package they could just use that original one
+
+  
+ great point but you know if you're writing a nice functional interface then maybe someone want to just use your functional interface because they know it's hopefully well-designed down to type so after you're done writing all this stuff and after you done being aware of the gotchas why don't you go ahead and take your library to the Discord channel that we've mentioned in previous podcast and I will make a footnote for and I'll go to the channel hash hashtag pound bindings to libraries is that right I see people that people publish Bindings that they've written and discuss best practices there so you can get some good feedback very cool what comes after that Jared how do you become famous so a month ago I guess right at the end of last year there was a a reason index
+
+  
+ published so a website that Aggregates different libraries that are written in reason in a nice way that you can an inside of a crawling through and PM and trying to figure out the right keywords it just is a an index of all the reason libraries including bindings or your reason libraries and that's called Reid x r e d e x stuck it up. IO and in order to get your package on there now you can make a portal quest to their repository they have some standards about things that you should include a nice read me a variety of fields in the package. Chase on that they use to make the entry more rich and then when you get that merge two you are live on the site
+
+  
+ that's awesome so that would
+
+  
+ excellent shape so submit it to relax and get Fame and glory and then that's it I mean once it's published you can go ahead and pull it down into your other reason projects and depend on it just like you would any other normal reason library and back maybe we should mention that the Quick-Step is install your package from in p.m. and then in your buck new your BS config go ahead and let your package name as a dependency and you'll be able to use your own Library fantastic that's right
+
+  
+ go back and I didn't mean to say hit it that's something I don't want to say either why don't you repeat what you're going to say
+
+  
+ so also if you are just making a package that you want a little bit of Separation but you don't actually want it to be live on mpm you can do the same thing that works in the a.m. p.m. world where in the package. Json you say here's this package but it is local it's either in the suppository or in an adjacent file you can just give a path that is where you can find this package that I wrote and then and payments all will find that and do all the right things and buckle scripts will be able to find it as well so that's a nice way if if you want the kind of improved code quality that comes from separating your code in two separate packages but you don't actually want to share this or it's not ready or whatever it is you can still do that
+
+  
+ breakpoint love that we use that internally in that super useful right I think it's fixed I'm Jared yummy pics
+
+  
+ one one package that I've used it's a wrap reason library is BS just so that is if you are doing testing and you like the jest test Runner there is a rapper of it and you can you can also look at the source code of that rapper to get ideas for how to make a nice functional rapper of a Township Library
+
+  
+ super and I've got two pics one is BS Jason which is also all that's actually not so much of a rapper but it is a an encoding and decoding library for Jason for reason and I really like it I think it takes kind of some of a similar approach to Elm Dakota switcher super useful and basically be at your son just makes a function that will take Jason and turn it into the format you expect and if it doesn't look like that it can optionally throwing error so you can catch that and will give you information about what's missing so that's a great way to say if you're pulling in data from the outside world and you want to make sure it looks how you think it looks before you just start using it then you can use vs Jason to verify that and handle the case where it doesn't look like you wanted to look and the second one that I'll pick is reason Elm which is another library that has been that uses external declarations to design the API for embedding a nail map into your reason code and this is something that I used for
+
+  
+ projects that they won because we like to use reason for writing JavaScript and then I'm reading all the front end stuff and that they're really neat Library I think I mentioned a couple episodes back but I started a project like that this is a better project so go ahead and use this one instead and reasonable all right that's it for me Jared any last notes
+
+  
+ note that sounds great see you write thanks everyone back

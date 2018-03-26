@@ -13,7 +13,7 @@ let job = (x: Feed.item(Feed.enclosure)) : Js.Promise.t(unit) => {
   let ffmpeg = Printf.sprintf("ffmpeg -i %s %s", mp3, flacInterMediate);
   let sox =
     Printf.sprintf(
-      "sox %s --channels=1 --bits=16 %s",
+      "sox %s --channels=1 -r 44100 --bits=16 %s",
       flacInterMediate,
       flac,
     );
