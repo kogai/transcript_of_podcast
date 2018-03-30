@@ -12,6 +12,8 @@ test:
 set:
 	gcloud config set project transcript-reason-town-fm
 	gcloud config set compute/zone asia-northeast1-a
+	# gcloud container clusters get-credentials cluster-2 --zone asia-northeast1-a --project transcript-reason-town-fm
+	gcloud auth application-default login
 
 .PHONY: build
 build:
@@ -21,3 +23,7 @@ build:
 .PHONY: push
 push:
 	gcloud docker -- push gcr.io/$(NAME)
+
+.PHONY: del
+del:
+	gcloud container clusters delete cluster-2

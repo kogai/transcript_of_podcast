@@ -3,16 +3,15 @@ kind: CronJob
 metadata:
   name: reasonfm
 spec:
-  schedule: '*/1 * * * *'
+  schedule: 0 0 * * *
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-            - name: hello
+            - name: app
               image: 'gcr.io/transcript-reason-town-fm/app:latest'
               args:
-                - /bin/sh
-                - '-c'
-                - 'date; echo "Hello, World!"'
+                - /bin/bash
+                - ./run.sh
           restartPolicy: OnFailure
