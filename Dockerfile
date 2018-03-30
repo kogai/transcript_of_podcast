@@ -9,6 +9,7 @@ RUN apk upgrade --update \
   make \
   gcc \
   python \
+  bash \
   ffmpeg \
   sox
 
@@ -21,4 +22,6 @@ COPY . /app
 
 RUN yarn build
 
-CMD ["node", "src/Transfer.bs.js"]
+# CMD ["node", "src/Transfer.bs.js"]
+# CMD ["/usr/bin/bash", "run.sh"]
+CMD ["./run.sh"]
