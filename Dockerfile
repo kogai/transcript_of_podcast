@@ -22,6 +22,4 @@ COPY . /app
 
 RUN yarn build
 
-# CMD ["node", "src/Transfer.bs.js"]
-# CMD ["/usr/bin/bash", "run.sh"]
-CMD ["./run.sh"]
+CMD ["node", "src/Transfer.bs.js"]

@@ -10,5 +10,6 @@ npm-debug.log
 *.flac
 .vscode
 *.log
-secret.json
+secrets/
 transcript*.json
+config.secret.yml

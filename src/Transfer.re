@@ -2,9 +2,6 @@
 
 let rss_endpoint = "https://rss.simplecast.com/podcasts/4151/rss";
 
-[@bs.send]
-external stringOfBuffer : ('a, [@bs.string] [ | `utf8]) => string = "toString";
-
 let job = (x: Feed.item(Feed.enclosure)) : Js.Promise.t(unit) => {
   let fileId = Feed.(x.enclosure |> Feed.nameOfUrl |> Filename.chop_extension);
   let mp3 = Printf.sprintf("audio/%s.mp3", fileId);

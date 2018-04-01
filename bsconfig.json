@@ -2,8 +2,8 @@
   "name": "transcript_reason_town_fm",
   "version": "0.1.0",
   "sources": {
-    "dir" : "src",
-    "subdirs" : true
+    "dir": "src",
+    "subdirs": true
   },
   "package-specs": {
     "module": "commonjs",
@@ -12,10 +12,11 @@
   "suffix": ".bs.js",
   "bs-dependencies": [
     "bs-fetch",
+    "@ahrefs/bs-dotenv",
     "bs-pixl-xml"
   ],
   "warnings": {
-    "error" : "+101"
+    "error": "+101"
   },
   "namespace": true,
   "refmt": 3

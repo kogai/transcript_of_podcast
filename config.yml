@@ -14,4 +14,11 @@ spec:
               args:
                 - /bin/bash
                 - ./run.sh
+              volumeMounts:
+                - name: secrets
+                  mountPath: /app/secrets
+          volumes:
+            - name: secrets
+              secret:
+                secretName: reasonfm-secrets
           restartPolicy: OnFailure
