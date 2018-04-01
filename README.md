@@ -3,5 +3,6 @@ Unofficial transcirpt of [ReasonTownFM](https://reason.town/)
 ### memo
 
 ```
-kubernetess logs cronjob/reasonfm
+kc logs cronjob/reasonfm
+kc apply -f config.secret.yml
 ```

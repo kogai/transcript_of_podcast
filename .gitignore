@@ -12,3 +12,4 @@ npm-debug.log
 *.log
 secrets/
 transcript*.json
+config.secret.yml

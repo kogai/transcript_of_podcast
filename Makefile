@@ -12,8 +12,11 @@ test:
 set:
 	gcloud config set project transcript-reason-town-fm
 	gcloud config set compute/zone asia-northeast1-a
-	# gcloud container clusters get-credentials cluster-2 --zone asia-northeast1-a --project transcript-reason-town-fm
 	gcloud auth application-default login
+	# gcloud container clusters get-credentials reasontownfm-cluster --zone asia-northeast1-a --project transcript-reason-town-fm
+	gcloud config set container/cluster reasontownfm-cluster
+	gcloud container clusters get-credentials reasontownfm-cluster
+	# gcloud config list
 
 .PHONY: build
 build:
@@ -26,4 +29,4 @@ push:
 
 .PHONY: del
 del:
-	gcloud container clusters delete cluster-2
+	gcloud container clusters delete reasontownfm-cluster
