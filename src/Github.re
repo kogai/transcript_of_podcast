@@ -1,16 +1,38 @@
-/* [@bs.module "fs"] */
-/* external createWriteStream : string => s = "createWriteStream"; */
-/*  */
-/* [@bs.module "https"] external get : (string, r => s) => s = "get"; */
-/*  */
-/* [@bs.send] external pipe : (Fetch.readableStream, s) => s = "pipe"; */
-/*  */
-/* [@bs.send] */
-/* external on : (s, [@bs.string] [ | `close | `error], 'a => unit) => 'b = "on"; */
-/* type config = {. "keyFilename": string}; */
-/*  */
-/* [@bs.module] [@bs.new] */
-/* external default : config => s = "@google-cloud/storage"; */
+module Repository = {
+  type t;
+  type pullrequest = {
+    .
+    "title": string,
+    "head": string,
+    "base": string,
+    "body": string,
+    "maintainer_can_modify": Js.undefined(bool),
+  };
+  [@bs.send]
+  external createPullRequest : (t, pullrequest, 'a => 'b) => Js.Promise.t('c) =
+    "";
+  let make =
+      (
+        ~title: string,
+        ~head: string,
+        ~base="master",
+        ~body="",
+        ~maintainer_can_modify: option(bool)=?,
+        repo: t,
+      ) =>
+    createPullRequest(
+      repo,
+      {
+        "title": title,
+        "head": head,
+        "base": base,
+        "body": body,
+        "maintainer_can_modify":
+          Js.Undefined.fromOption(maintainer_can_modify),
+      },
+    );
+};
+
 type t;
 
 type auth = {
@@ -22,6 +44,8 @@ type auth = {
 
 [@bs.module] [@bs.new]
 external default : Js.undefined(auth) => t = "github-api";
+
+[@bs.send] external getRepo : (t, string, string) => Repository.t = "";
 
 let make = (~username=?, ~password=?, ~token=?, _) =>
   switch (username, password, token) {
@@ -37,5 +61,3 @@ let make = (~username=?, ~password=?, ~token=?, _) =>
       )
     )
   };
-
-let x = make(~username="ok", ());
