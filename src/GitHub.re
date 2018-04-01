@@ -30,6 +30,7 @@ module Repository = {
         "maintainer_can_modify":
           Js.Undefined.fromOption(maintainer_can_modify),
       },
+      Js.log,
     );
 };
 
@@ -63,6 +64,7 @@ let make = (~username=?, ~password=?, ~token=?, _) =>
   };
 
 [@bs.val] external token : option(string) = "process.env.GITHUB_API_TOKEN";
+
 [@bs.send]
 external stringOfBuffer : ('a, [@bs.string] [ | `utf8]) => string = "toString";
 
@@ -75,9 +77,5 @@ let branch =
   |> Printf.sprintf("update/%s", _);
 
 make(~token=Belt.Option.getExn(token), ())
-   |> getRepo(_, "kogai", "transcript_reason_town_fm")
-   |> Repository.makePullRequest(
-        ~title="Add New Episode",
-        ~head=branch,
-        _,
-      );
+|> getRepo(_, "kogai", "transcript_reason_town_fm")
+|> Repository.makePullRequest(~title="Add New Episode", ~head=branch, _);

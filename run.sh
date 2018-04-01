@@ -1,4 +1,6 @@
 #! /bin/bash
+eval "$(ssh-agent -s)"
+ssh-add /app/secrets/.ssh/id_rsa
 
 node src/Transfer.bs.js
 
@@ -7,4 +9,6 @@ git config --global user.name "Auto updater"
 git checkout -b update/$(date -I)
 git add audio/
 git commit -m ":robot: Add new episode"
-# git push
+git push
+
+node src/GitHub.bs.js
