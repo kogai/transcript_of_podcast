@@ -11,7 +11,7 @@ module Repository = {
   [@bs.send]
   external createPullRequest : (t, pullrequest, 'a => 'b) => Js.Promise.t('c) =
     "";
-  let make =
+  let makePullRequest =
       (
         ~title: string,
         ~head: string,
@@ -62,5 +62,22 @@ let make = (~username=?, ~password=?, ~token=?, _) =>
     )
   };
 
+[@bs.val] external token : option(string) = "process.env.GITHUB_API_TOKEN";
+[@bs.send]
+external stringOfBuffer : ('a, [@bs.string] [ | `utf8]) => string = "toString";
 
-make(~token="token", ()) |> getRepo(_, "", "");
+let noOption = Node.Child_process.option();
+
+let branch =
+  Node.Child_process.execSync("date -I", noOption)
+  |> stringOfBuffer(_, `utf8)
+  |> Js.String.trim
+  |> Printf.sprintf("update/%s", _);
+
+make(~token=Belt.Option.getExn(token), ())
+   |> getRepo(_, "kogai", "transcript_reason_town_fm")
+   |> Repository.makePullRequest(
+        ~title="Add New Episode",
+        ~head=branch,
+        _,
+      );
