@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@ahrefs/bs-dotenv@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@ahrefs/bs-dotenv/-/bs-dotenv-1.0.3.tgz#3a904ac064289dca205bd33d2a01d1e26db0cbaa"
+
 "@google-cloud/common@^0.16.1":
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/@google-cloud/common/-/common-0.16.2.tgz#029b3c7c4a425f1374045ba8f6a878bd50e4761c"
@@ -611,6 +615,10 @@ dot-prop@^4.1.0:
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.0.tgz#1f19e0c2e1aa0e32797c49799f2837ac6af69c57"
   dependencies:
     is-obj "^1.0.0"
+
+dotenv@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
 
 duplexify@^3.5.0, duplexify@^3.5.3, duplexify@^3.5.4:
   version "3.5.4"

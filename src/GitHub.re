@@ -70,6 +70,8 @@ external stringOfBuffer : ('a, [@bs.string] [ | `utf8]) => string = "toString";
 
 let noOption = Node.Child_process.option();
 
+Dotenv.config();
+
 let branch =
   Node.Child_process.execSync("date -I", noOption)
   |> stringOfBuffer(_, `utf8)
