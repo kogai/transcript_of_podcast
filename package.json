@@ -11,7 +11,9 @@
     "clean:audio": "rm -f audio/*.flac && rm -f audio/*.mp3",
     "clean": "bsb -clean-world"
   },
-  "keywords": ["BuckleScript"],
+  "keywords": [
+    "BuckleScript"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -23,6 +25,7 @@
     "@google-cloud/storage": "^1.6.0",
     "bs-fetch": "^0.2.1",
     "bs-pixl-xml": "^0.1.0",
+    "github-api": "^3.0.0",
     "isomorphic-fetch": "^2.2.1",
     "mp3-split": "^4.0.0",
     "pixl-xml": "^1.0.13"
