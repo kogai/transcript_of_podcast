@@ -50,7 +50,7 @@ module ReasonTown =
               |> Array.of_list;
             xs
             |> List.filter((x: item(enclosure)) => {
-                 let title = Feed.escape(x.title);
+                 let title = Utils.escape(x.title);
                  ! Js.Array.includes(title, files);
                });
           }
