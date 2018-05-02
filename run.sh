@@ -2,7 +2,7 @@
 eval "$(ssh-agent -s)"
 ssh-add /app/secrets/.ssh/id_rsa
 
-node src/Transfer.bs.js
+node src/Main.bs.js
 
 git config --global user.email "kogai0121@gmail.com"
 git config --global user.name "Auto updater"
