@@ -2,18 +2,18 @@
   "name": "transcript_reason_town_fm",
   "version": "0.1.0",
   "scripts": {
-    "start": "yarn build && node src/Transfer.bs.js",
+    "start": "yarn build && node src/Main.bs.js",
     "build": "bsb -make-world",
     "build:watch": "bsb -make-world -w",
-    "build:rei": "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
+    "build:rei":
+      "bsc -bs-re-out lib/bs/src/Feed-Transcriptreasontownfm.cmi >> src/Feed.rei",
     "build:container": "yarn clean:audio && docker build -t reasonfm .",
-    "job": "yarn clean:audio && docker build -t reasonfm . && docker run --rm -v `pwd`/audio:/app/audio -t reasonfm",
+    "job":
+      "yarn clean:audio && docker build -t reasonfm . && docker run --rm -v `pwd`/audio:/app/audio -t reasonfm",
     "clean:audio": "rm -f audio/*.flac && rm -f audio/*.mp3",
     "clean": "bsb -clean-world"
   },
-  "keywords": [
-    "BuckleScript"
-  ],
+  "keywords": ["BuckleScript"],
   "author": "",
   "license": "MIT",
   "devDependencies": {
