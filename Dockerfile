@@ -22,4 +22,4 @@ COPY . /app
 
 RUN yarn build
 
-CMD ["node", "src/Main.bs.js"]
+CMD ["yarn", "job:internal"]

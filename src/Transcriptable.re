@@ -53,6 +53,7 @@ module Transcripter =
        (
          Impl: {
            type t;
+           let dir_name: string;
            let rss_endpoint: string;
            /* (title, url) */
            let parse_rss: string => list((string, string));
@@ -90,7 +91,10 @@ module Transcripter =
       |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
       >>= Storage.upload(_, flac)
       >>= progress("Analyzing on Google Cloud Speech...")
-      >>= Speech.translate(fileId, Utils.escape(x.title))
+      >>= Speech.translate(
+            fileId,
+            Printf.sprintf("%s/%s", Impl.dir_name, Utils.escape(x.title)),
+          )
     );
   };
   let run = () =>
