@@ -5,7 +5,7 @@
 let target =
   switch (Array.to_list(argv)) {
   | [_, _, "reasontown", ..._] => Transcripter.ReasonTown.run
-  | [_, _, "rustyspike", ..._] => raise(Not_found)
+  | [_, _, "rustyspike", ..._] => Transcripter.RustySpike.run
   | reason => raise(Invalid_argument(List.fold_left((acc, s) => acc ++ s, "", reason)))
   };
 

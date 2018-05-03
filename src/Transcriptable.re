@@ -4,7 +4,7 @@ exception Invalid_url;
 
 let nameOfUrl = url : string =>
   Js.Re.(
-    fromString(".*\\/([0-9a-zA-Z]*\\.mp3$)")
+    fromString(".*\\/([0-9a-zA-Z-_]*\\.mp3$)")
     |> exec(url)
     |> (
       fun
@@ -84,7 +84,9 @@ module Transcripter =
       >>= progress("Modify encoding...")
       |> fmap((_) => Node.Child_process.execSync(sox, noOption))
       >>= progress("Upload to cloud storage...")
-      |> fmap((_) => Storage.default({"keyFilename": "./secret.json"}))
+      |> fmap((_) =>
+           Storage.default({"keyFilename": "./secrets/secret.json"})
+         )
       |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
       >>= Storage.upload(_, flac)
       >>= progress("Analyzing on Google Cloud Speech...")
