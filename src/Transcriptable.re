@@ -4,7 +4,7 @@ exception Invalid_url;
 
 let nameOfUrl = url : string =>
   Js.Re.(
-    fromString(".*\\/([0-9a-zA-Z]*\\.mp3$)")
+    fromString(".*\\/([0-9a-zA-Z-_]*\\.mp3$)")
     |> exec(url)
     |> (
       fun
@@ -53,6 +53,7 @@ module Transcripter =
        (
          Impl: {
            type t;
+           let dir_name: string;
            let rss_endpoint: string;
            /* (title, url) */
            let parse_rss: string => list((string, string));
@@ -84,11 +85,16 @@ module Transcripter =
       >>= progress("Modify encoding...")
       |> fmap((_) => Node.Child_process.execSync(sox, noOption))
       >>= progress("Upload to cloud storage...")
-      |> fmap((_) => Storage.default({"keyFilename": "./secret.json"}))
+      |> fmap((_) =>
+           Storage.default({"keyFilename": "./secrets/secret.json"})
+         )
       |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
       >>= Storage.upload(_, flac)
       >>= progress("Analyzing on Google Cloud Speech...")
-      >>= Speech.translate(fileId, Utils.escape(x.title))
+      >>= Speech.translate(
+            fileId,
+            Printf.sprintf("%s/%s", Impl.dir_name, Utils.escape(x.title)),
+          )
     );
   };
   let run = () =>

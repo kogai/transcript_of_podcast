@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "start": "yarn build && node src/Main.bs.js",
+    "start:reasontown": "yarn start -- reasontown",
+    "start:rustyspike": "yarn start -- rustyspike",
     "build": "bsb -make-world",
     "build:watch": "bsb -make-world -w",
     "build:rei":
@@ -10,6 +12,7 @@
     "build:container": "yarn clean:audio && docker build -t reasonfm .",
     "job":
       "yarn clean:audio && docker build -t reasonfm . && docker run --rm -v `pwd`/audio:/app/audio -t reasonfm",
+    "job:internal": "yarn start:reasontown && yarn start:rustyspike",
     "clean:audio": "rm -f audio/*.flac && rm -f audio/*.mp3",
     "clean": "bsb -clean-world"
   },
