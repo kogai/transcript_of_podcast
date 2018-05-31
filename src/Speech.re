@@ -46,7 +46,7 @@ let translate = (fileId, title, ()) =>
   Async.(
     speechClient({
       "projectId": "transcript-reason-town-fm",
-      "keyFilename": "./secrets/secret.json",
+      "keyFilename": "./secret.json",
     })
     |> longRunningRecognize(
          _,
