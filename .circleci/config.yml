@@ -14,18 +14,18 @@ references:
         echo $GOOGLE_CLOUD_PLATFORM_API_KEY > ${HOME}/secret.json
 
         git config --global user.name "kogai"
-        git config --global user.email "kogai0121@gmail.com"
+        git config --global user.email "$EMAIL"
         
   do_job: &do_job
     run:
-      name: Build server container image
+      name: Generate new episode
       command: |
         yarn job
         git checkout -b update/$(date -I)
-        git add audio/
         STATUS=$(git status -s)
         if [ "$STATUS" != "" ]; then \
           echo "DIFF EXIST"\ 
+          git add audio/
           git commit -m ":robot: Add new episode"
           git push --set-upstream origin use-ci-as-batch
         else \
@@ -33,11 +33,6 @@ references:
         fi \
 
 jobs:
-  sandbox:
-    <<: *build_env
-    steps:
-      - checkout
-      - *prepare
   do_job:
     <<: *build_env
     steps:
@@ -50,9 +45,6 @@ jobs:
 
 workflows:
   version: 2
-  sandbox:
-    jobs:
-      - sandbox
   scheduled:
     triggers:
       - schedule:
