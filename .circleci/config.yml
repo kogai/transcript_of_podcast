@@ -1,0 +1,54 @@
+version: 2
+references:
+  master_br: &master_br
+    only:
+      - master
+  build_env: &build_env
+    machine: true
+  prepare: &prepare
+    run:
+      name: Setup global dependencies
+      command: |
+        sudo apt-get update
+        docker --version
+        echo $GOOGLE_CLOUD_PLATFORM_API_KEY > ${HOME}/secret.json
+        git config --global user.name "kogai"
+        git config --global user.email "kogai0121@gmail.com"
+        
+  do_job: &do_job
+    run:
+      name: Build server container image
+      command: |
+        yarn job
+        git commit --allow-empty -m "Add empty commit"
+        git push --set-upstream origin use-ci-as-batch
+
+jobs:
+  sandbox:
+    <<: *build_env
+    steps:
+      - checkout
+      - *prepare
+  do_job:
+    <<: *build_env
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "7b:67:b5:f5:bb:a6:e2:ff:52:f3:8e:1e:ac:f4:29:07"
+      - *prepare
+      - *do_job
+
+workflows:
+  version: 2
+  sandbox:
+    jobs:
+      - sandbox
+  scheduled:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches: *master_br
+    jobs:
+      - do_job
