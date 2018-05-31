@@ -12,6 +12,7 @@ references:
         sudo apt-get update
         docker --version
         echo $GOOGLE_CLOUD_PLATFORM_API_KEY > ${HOME}/secret.json
+
         git config --global user.name "kogai"
         git config --global user.email "kogai0121@gmail.com"
         
@@ -20,7 +21,9 @@ references:
       name: Build server container image
       command: |
         yarn job
-        git commit --allow-empty -m "Add empty commit"
+        git checkout -b update/$(date -I)
+        git add audio/
+        git commit -m ":robot: Add new episode"
         git push --set-upstream origin use-ci-as-batch
 
 jobs:
