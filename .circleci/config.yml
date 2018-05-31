@@ -1,0 +1,55 @@
+version: 2
+references:
+  master_br: &master_br
+    only:
+      - master
+  build_env: &build_env
+    machine: true
+  prepare: &prepare
+    run:
+      name: Setup global dependencies
+      command: |
+        sudo apt-get update
+        docker --version
+        echo $GOOGLE_CLOUD_PLATFORM_API_KEY > ${HOME}/secret.json
+
+        git config --global user.name "kogai"
+        git config --global user.email "$EMAIL"
+        
+  do_job: &do_job
+    run:
+      name: Generate new episode
+      command: |
+        yarn job
+        git checkout -b update/$(date -I)
+        STATUS=$(git status -s)
+        if [ "$STATUS" != "" ]; then \
+          echo "DIFF EXIST"\ 
+          git add audio/
+          git commit -m ":robot: Add new episode"
+          git push --set-upstream origin use-ci-as-batch
+        else \
+          echo "DIFF NOT EXIST" \
+        fi \
+
+jobs:
+  do_job:
+    <<: *build_env
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "7b:67:b5:f5:bb:a6:e2:ff:52:f3:8e:1e:ac:f4:29:07"
+      - *prepare
+      - *do_job
+
+workflows:
+  version: 2
+  scheduled:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches: *master_br
+    jobs:
+      - do_job

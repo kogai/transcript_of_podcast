@@ -86,7 +86,7 @@ module Transcripter =
       |> fmap((_) => Node.Child_process.execSync(sox, noOption))
       >>= progress("Upload to cloud storage...")
       |> fmap((_) =>
-           Storage.default({"keyFilename": "./secrets/secret.json"})
+           Storage.default({"keyFilename": "./secret.json"})
          )
       |> fmap(Storage.bucket(_, "transcript-reason-town-ml"))
       >>= Storage.upload(_, flac)
