@@ -14,12 +14,12 @@ RUN apk upgrade --update \
   sox
 
 WORKDIR /app
-COPY yarn.lock package.json bsconfig.json /app/
+COPY package-lock.json package.json bsconfig.json /app/
 
-RUN yarn
+RUN npm install
 
 COPY . /app
 
-RUN yarn build
+RUN npm run build
 
-CMD ["yarn", "job:internal"]
+CMD ["npm", "run", "job:internal"]

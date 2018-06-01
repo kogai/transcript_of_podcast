@@ -11,7 +11,7 @@ references:
       command: |
         sudo apt-get update
         docker --version
-        echo $GOOGLE_CLOUD_PLATFORM_API_KEY > ${HOME}/secret.json
+        echo $GOOGLE_CLOUD_PLATFORM_API_KEY > secret.json
 
         git config --global user.name "kogai"
         git config --global user.email "$EMAIL"
@@ -27,14 +27,7 @@ references:
 
         git checkout -b update/$(date -I)
         STATUS=$(git status -s)
-        if [ "$STATUS" != "" ]; then \
-          echo "DIFF EXIST"\ 
-          git add audio/
-          git commit -m ":robot: Add new episode"
-          git push --set-upstream origin use-ci-as-batch
-        else \
-          echo "DIFF NOT EXIST" \
-        fi \
+        bash .circleci/commit.sh
 
 jobs:
   do_job:
@@ -52,7 +45,7 @@ workflows:
   scheduled:
     triggers:
       - schedule:
-          cron: "0,45 0,1 * * *"
+          cron: "0,45 0,8 * * *"
           filters:
             branches: *master_br
     jobs:
