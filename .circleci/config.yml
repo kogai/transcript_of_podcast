@@ -20,7 +20,11 @@ references:
     run:
       name: Generate new episode
       command: |
-        yarn job
+        rm -f audio/*.flac
+        rm -f audio/*.mp3 
+        docker build -t reasonfm .
+        docker run --rm -v `pwd`/audio:/app/audio -t reasonfm 
+
         git checkout -b update/$(date -I)
         STATUS=$(git status -s)
         if [ "$STATUS" != "" ]; then \
@@ -48,7 +52,7 @@ workflows:
   scheduled:
     triggers:
       - schedule:
-          cron: "0 0 * * *"
+          cron: "0,45 0,1 * * *"
           filters:
             branches: *master_br
     jobs:
