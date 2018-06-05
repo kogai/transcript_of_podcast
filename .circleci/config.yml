@@ -24,9 +24,6 @@ references:
         rm -f audio/*.mp3 
         docker build -t reasonfm .
         docker run --rm -v `pwd`/audio:/app/audio -t reasonfm 
-
-        git checkout -b update/$(date -I)
-        STATUS=$(git status -s)
         bash .circleci/commit.sh
 
 jobs:
@@ -45,7 +42,7 @@ workflows:
   scheduled:
     triggers:
       - schedule:
-          cron: "0,45 0,8 * * *"
+          cron: "0 15 * * *"
           filters:
             branches: *master_br
     jobs:
