@@ -42,7 +42,7 @@ workflows:
   scheduled:
     triggers:
       - schedule:
-          cron: "0,10 0,14 * * *"
+          cron: "0 15 * * *"
           filters:
             branches: *master_br
     jobs:
